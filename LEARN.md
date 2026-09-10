@@ -19,3 +19,8 @@ Then open `src/train.py` and point to `train_test_split` and `metrics_dict`.
 
 Rewrite `metrics_dict` on paper (or a blank file) without looking. If that
 works, you can defend the minimum version in an intern interview.
+
+Optional local demo (after training): `uvicorn app:app --app-dir src --reload`
+then score one row at `http://127.0.0.1:8000`. That page is localhost only,
+not a deployed product. Do not put “FastAPI dashboard” on a resume until you
+can explain the metrics above without looking.

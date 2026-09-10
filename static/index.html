@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Predictive Maintenance demo</title>
+    <style>
+      body {
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        max-width: 40rem;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        color: #111;
+      }
+      label { display: block; margin: 0.6rem 0 0.2rem; font-size: 0.9rem; }
+      input { width: 100%; padding: 0.4rem; }
+      button { margin-top: 1rem; padding: 0.5rem 1rem; }
+      pre { background: #f4f4f5; padding: 0.75rem; overflow: auto; }
+      p.note { color: #52525b; font-size: 0.9rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Failure risk (synthetic sensors)</h1>
+    <p class="note">
+      Local demo only — not a production or hosted app. Data is generated.
+      Run <code>python src/train.py</code> before this page can score a row.
+    </p>
+    <form id="form">
+      <label>Hours run <input name="hours_run" type="number" value="4200" /></label>
+      <label>Vibration mm/s <input name="vibration_mm_s" type="number" step="0.1" value="3.1" /></label>
+      <label>Temperature C <input name="temperature_c" type="number" value="88" /></label>
+      <label>Pressure psi <input name="pressure_psi" type="number" value="118" /></label>
+      <label>Current amps <input name="current_amps" type="number" value="18" /></label>
+      <button type="submit">Score</button>
+    </form>
+    <pre id="out">Submit a reading.</pre>
+    <script>
+      const form = document.getElementById("form");
+      const out = document.getElementById("out");
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const body = Object.fromEntries(new FormData(form).entries());
+        for (const key of Object.keys(body)) body[key] = Number(body[key]);
+        const response = await fetch("/api/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const payload = await response.json();
+        out.textContent = JSON.stringify(payload, null, 2);
+      });
+    </script>
+  </body>
+</html>

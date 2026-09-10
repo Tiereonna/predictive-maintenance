@@ -13,8 +13,10 @@ are what you quote instead.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
+import joblib
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
@@ -175,7 +177,22 @@ def main() -> None:
     )
     out = ARTIFACTS / "metrics.csv"
     summary.to_csv(out, index=False)
+    joblib.dump(
+        {"logistic": logistic, "booster": booster, "booster_name": booster_name},
+        ARTIFACTS / "models.joblib",
+    )
+    (ARTIFACTS / "importance.json").write_text(
+        json.dumps(
+            {
+                "logistic": log_importance.to_dict(),
+                "booster": boost_importance.to_dict(),
+                "booster_name": booster_name,
+            },
+            indent=2,
+        )
+    )
     print(f"\nWrote {out}")
+    print(f"Wrote {ARTIFACTS / 'models.joblib'}")
 
 
 if __name__ == "__main__":
