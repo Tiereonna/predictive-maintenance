@@ -10,3 +10,4 @@ artifacts/*.csv
 artifacts/*.joblib
 artifacts/*.json
 !artifacts/.gitkeep
+LEARN.md

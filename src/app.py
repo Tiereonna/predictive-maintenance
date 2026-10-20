@@ -1,10 +1,5 @@
-"""
-Tiny demo API. Train first (`python src/train.py`) so artifacts/models.joblib
-exists. Then: `uvicorn app:app --app-dir src --reload`
-
-Interview line: scores come from the fitted booster; the importance table is
-why a prediction is not a black box. This is not a plant-facing product.
-"""
+# small api for the model
+# run python src/train.py first, then: uvicorn app:app --app-dir src --reload
 
 from __future__ import annotations
 

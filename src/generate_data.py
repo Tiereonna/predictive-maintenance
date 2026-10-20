@@ -1,21 +1,12 @@
-"""
-Synthetic industrial sensor rows.
-
-Nothing here is from a real plant. We invent a simple failure rule so the
-models have a signal to find — and so you can check whether they learned
-the rule you planted, not a mystery.
-
-Interview trap: "where did you get the data?" Answer: I generated it. The
-project is about the training / metrics pipeline, not a production SCADA feed.
-"""
+# fake sensor data (not from a real machine)
+# there's a planted failure rule so i can check if the model actually learns it
 
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 
-# Fixed seed so every run produces the same table. That lets you debug a
-# metric without the dataset shifting underneath you.
+# fixed seed so the data is the same every run
 RNG_SEED = 20260909
 
 

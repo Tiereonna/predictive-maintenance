@@ -1,15 +1,5 @@
-"""
-Train a simple baseline and XGBoost, then print the metrics a resume mentions.
-
-Why two models: logistic regression is the honest baseline (linear, readable
-coefficients). XGBoost is the stronger tree model. If XGBoost is not clearly
-better on recall / F1, you should say that in an interview — "I compared,
-I did not assume boosting wins."
-
-Class imbalance: failures are rarer than healthy rows. Accuracy would look
-great if the model always predicted 0. Precision / recall / F1 / ROC-AUC
-are what you quote instead.
-"""
+# trains logistic regression (baseline) and xgboost, then prints metrics
+# using precision/recall/f1/roc-auc instead of accuracy because failures are rarer
 
 from __future__ import annotations
 
