@@ -2,7 +2,10 @@
 
 [![CI](https://github.com/Tiereonna/predictive-maintenance/actions/workflows/ci.yml/badge.svg)](https://github.com/Tiereonna/predictive-maintenance/actions/workflows/ci.yml)
 
-Local demo only. The rows are simulated sensor readings, not a factory feed. Nothing is deployed.
+Two tracks:
+
+1. A small local demo on **simulated** sensor rows (the FastAPI page).
+2. A chunked ETL + model on **real** [Backblaze hard drive stats](https://www.backblaze.com/cloud-storage/resources/hard-drive-test-data) (cite Backblaze). Failures are rare, so the numbers drop vs the toy demo. Use those numbers on a resume, not the simulated 0.80 ROC-AUC.
 
 The question is: will this machine fail within 7 days? Training compares logistic regression with a boosted tree and writes precision, recall, F1, and ROC-AUC. A small FastAPI page on your laptop can then score one reading.
 
@@ -64,17 +67,40 @@ Both models land near 0.80 ROC-AUC and 71% recall. The API scores one row with t
 src/generate_data.py   synthetic rows and the planted failure rule
 src/train.py           split, fit, metrics, save models
 src/app.py             local FastAPI demo
-tests/test_generate_data.py
+src/etl_backblaze.py   chunked load of Backblaze daily csvs
+src/train_backblaze.py time-based split (no future rows in train)
+tests/
 static/index.html      one-page form
+Dockerfile             trains the toy model at build time
+render.yaml            free Render web service
 ```
 
-Files under `artifacts/` are gitignored.
+## Backblaze (real data)
+
+Download a yearly zip from Backblaze, unzip some daily csvs, then:
+
+```bash
+python src/etl_backblaze.py --path data/backblaze/days
+python src/train_backblaze.py
+```
+
+Last run on this machine: 16 days from 2013, 359,727 rows, 0 rejected. Train/test split by date (75/25). Failure rate about 0.02–0.04%. Empty SMART columns were dropped. Missing values were filled with the median for logistic regression.
+
+```text
+logistic                precision 0.012  recall 0.387  f1 0.024  roc_auc 0.731
+HistGradientBoosting    precision 0.007  recall 0.419  f1 0.014  roc_auc 0.689
+```
+
+Logistic regression won on ROC-AUC. The tree did not. Precision is low because almost every drive is healthy.
+
+If `DATABASE_URL` is set, the ETL upserts into `drive_daily`.
 
 ## Tests last run
 
 ```text
-tests/test_generate_data.py
-2 passed
+4 passed
 ```
 
-Those tests check that the generator returns 4,000 complete rows and that the same seed produces the same table.
+Files under `artifacts/` are gitignored.
+
+Those tests check the generator, plus Backblaze cleaning (bad dates / blank serials, chunked folder load).

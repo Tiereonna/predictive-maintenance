@@ -1,0 +1,10 @@
+# free web service. sleeps after idle, first load can take ~30s
+services:
+  - type: web
+    name: predictive-maintenance
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/metrics
+    envVars:
+      - key: PORT
+        value: "8000"
