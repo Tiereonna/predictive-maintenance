@@ -4,10 +4,10 @@
 
 Two tracks:
 
-1. A small local demo on **simulated** sensor rows (the FastAPI page).
+1. A small demo on **simulated** sensor rows (the FastAPI page). Live: [predictive-maintenance-8hqf.onrender.com](https://predictive-maintenance-8hqf.onrender.com). Free Render instance; first load after idle can take about 30 seconds.
 2. A chunked ETL + model on **real** [Backblaze hard drive stats](https://www.backblaze.com/cloud-storage/resources/hard-drive-test-data) (cite Backblaze). Failures are rare, so the numbers drop vs the toy demo. Use those numbers on a resume, not the simulated 0.80 ROC-AUC.
 
-The question is: will this machine fail within 7 days? Training compares logistic regression with a boosted tree and writes precision, recall, F1, and ROC-AUC. A small FastAPI page on your laptop can then score one reading.
+The question is: will this machine fail within 7 days? Training compares logistic regression with a boosted tree and writes precision, recall, F1, and ROC-AUC. The FastAPI page scores one reading.
 
 ## Pipeline
 
@@ -18,7 +18,7 @@ flowchart LR
   split --> tree[Boosted tree]
   logistic --> metrics[Held-out metrics]
   tree --> metrics
-  tree --> api[Local FastAPI score]
+  tree --> api[FastAPI score]
 ```
 
 ## Setup
@@ -59,7 +59,7 @@ logistic,0.665,0.714,0.689,0.797
 HistGradientBoosting,0.682,0.712,0.697,0.802
 ```
 
-Both models land near 0.80 ROC-AUC and 71% recall. The API scores one row with the tree model and returns a failure probability. That page is localhost only.
+Both models land near 0.80 ROC-AUC and 71% recall. The API scores one row with the tree model and returns a failure probability. The hosted page uses whichever tree the Docker build trained (XGBoost if the image has it).
 
 ## Layout
 

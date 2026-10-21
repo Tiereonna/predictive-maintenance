@@ -32,7 +32,7 @@ def load_bundle() -> dict:
     if not path.exists():
         raise HTTPException(
             status_code=503,
-            detail="Train first: python src/train.py (local demo, not deployed).",
+            detail="Train first: python src/train.py.",
         )
     return joblib.load(path)
 
@@ -48,7 +48,7 @@ def metrics() -> dict:
     if not path.exists():
         raise HTTPException(
             status_code=503,
-            detail="Train first: python src/train.py (local demo, not deployed).",
+            detail="Train first: python src/train.py.",
         )
     rows = pd.read_csv(path).to_dict(orient="records")
     return {"models": rows}
