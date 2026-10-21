@@ -51,7 +51,7 @@ def metrics() -> dict:
             detail="Train first: python src/train.py.",
         )
     rows = pd.read_csv(path).to_dict(orient="records")
-    return {"models": rows}
+    return {"dataset": "synthetic", "models": rows}
 
 
 @app.post("/api/predict")
@@ -61,6 +61,7 @@ def predict(reading: SensorReading) -> dict:
     booster = bundle["booster"]
     probability = float(booster.predict_proba(frame)[0, 1])
     return {
+        "dataset": "synthetic",
         "failure_probability": round(probability, 4),
         "flagged": probability >= 0.5,
         "model": bundle["booster_name"],
