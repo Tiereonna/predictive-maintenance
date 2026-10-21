@@ -24,6 +24,21 @@ def test_bad_date_and_blank_serial_drop():
     assert cleaned.iloc[0]["failure"] == 0
 
 
+def test_nan_serial_is_rejected():
+    frame = pd.DataFrame(
+        {
+            "date": ["2013-04-10"],
+            "serial_number": [None],
+            "model": ["ST"],
+            "failure": [0],
+            "smart_9_raw": [100],
+        }
+    )
+    cleaned, report = clean_chunk(frame)
+    assert report["rows_rejected"] == 1
+    assert cleaned.empty
+
+
 def test_chunked_folder_load(tmp_path: Path):
     one = tmp_path / "a.csv"
     two = tmp_path / "b.csv"

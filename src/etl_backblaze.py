@@ -41,14 +41,15 @@ def clean_chunk(frame: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     cols = KEEP_ALWAYS + smart
     out = frame[cols].copy()
     out["date"] = pd.to_datetime(out["date"], errors="coerce")
+    serial = out["serial_number"].astype(str).str.strip().str.lower()
+    blank_serial = out["serial_number"].isna() | serial.isin({"", "nan", "none", "<na>"})
     out["serial_number"] = out["serial_number"].astype(str).str.strip()
     out["model"] = out["model"].astype(str).str.strip()
     out["failure"] = pd.to_numeric(out["failure"], errors="coerce")
 
     bad = (
         out["date"].isna()
-        | out["serial_number"].eq("")
-        | out["serial_number"].eq("nan")
+        | blank_serial
         | out["failure"].isna()
         | ~out["failure"].isin([0, 1])
     )
